@@ -45,7 +45,7 @@ DEF_ACCESSIBLE(DEF_METAFUNC_FN, is_metafunc);
 #undef DEF_METAFUNC_FN
 
 // Function constraints
-#define DEF_IS_FUNC_FN(U) void_fn_t<U::template exec>
+#define DEF_IS_FUNC_FN(U) mlk::type_traits::void_fn_t<U::template exec>
 DEF_ACCESSIBLE(DEF_IS_FUNC_FN, is_func);
 #undef DEF_IS_FUNC_FN
 

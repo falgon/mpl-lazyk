@@ -72,10 +72,6 @@ struct def_type
 #define MLK_REQUIRES(REQ_TYPE) \
     std::enable_if_t<REQ_TYPE::value, std::nullptr_t>
 
-template <class T, MLK_REQUIRES_DEFAULT_TP>
-struct eval
-    : def_type<T> {};
-
 } // namespace mlk
 
 #else

@@ -1,9 +1,9 @@
 #ifndef INCLUDED_MLK_MONAD_TRANSFORMER_STATE_TRANSFORMER_LAZY_HPP
 #define INCLUDED_MLK_MONAD_TRANSFORMER_STATE_TRANSFORMER_LAZY_HPP
-#include "../../config.hpp"
-#include "../../type_traits.hpp"
+#include "../../../config.hpp"
+#include "../../../type_traits.hpp"
 
-namespace mlk::monad::transformer::lazy::state_transformer {
+namespace mlk::monad::transformer::state_transformer::lazy {
 
 namespace details {
 
@@ -65,7 +65,7 @@ struct evaluate<T, MLK_REQUIRES(type_traits::is_metafunc<T>)>
 template <class F, class InnerMonad>
 class state_transformer {
     static_assert(type_traits::is_func<F>::value);
-    static_assert(std::disjunction_v<type_traits::is_monad<InnerMonad>, type_traits::is_monad<InnerMonad>>);
+    static_assert(std::disjunction_v<type_traits::strict::is_monad<InnerMonad>, type_traits::lazy::is_monad<InnerMonad>>);
 
     template <class K>
     class bind_result {

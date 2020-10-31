@@ -20,25 +20,44 @@ class exec_base {
     template <class G, MLK_REQUIRES_DEFAULT_TP>
     struct exec_impl {
         static_assert(
-            type_traits::always_false<Args...>::value,
+            type_traits::always_false<G>::value,
             "Type F must satisfy is_metafunc"
         );
     };
     template <class G>
-    struct exec_impl<G, MLK_REQUIRES(type_traits::is_metafunc<G>)>
+    struct exec_impl<G, MLK_REQUIRES(type_traits::is_func<G>)>
         : def_type<typename F::template exec<Args...>> {};
 public:
     typedef typename exec_impl<F>::type type;
 };
 
-} // namespace details
-
-template <class F, class... Args>
-using exec = typename details::exec_base<F, Args...>::type;
+template <class T, MLK_REQUIRES_DEFAULT_TP>
+struct eval_base
+    : def_type<T> {};
 
 template <class T>
-struct eval<T, MLK_REQUIRES(type_traits::is_metafunc<T>)>
-    : eval<typename T::type> {};
+struct eval_base<T, MLK_REQUIRES(type_traits::is_metafunc<T>)>
+    : T {}; 
+
+template <class T, MLK_REQUIRES_DEFAULT_TP>
+struct eval_rec_base
+    : def_type<T> {};
+
+template <class T>
+struct eval_rec_base<T, MLK_REQUIRES(type_traits::is_metafunc<T>)>
+    : eval_rec_base<typename T::type> {};
+
+} // namespace details
+
+template <class T>
+using eval = typename details::eval_base<T>::type;
+
+template <class T>
+using eval_rec = typename details::eval_rec_base<T>::type;
+
+template <class F, class... Args>
+using exec = 
+    typename details::exec_base<F, Args...>::type;
 
 } // namespace mlk
 
