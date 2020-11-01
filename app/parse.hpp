@@ -62,6 +62,11 @@ public:
 };
 typedef mlk::fn<Afolder_result> Afolder;
 
+template <class>
+struct pTerm_result
+    : def_type<pTerm> {};
+typedef mlk::fn<pTerm_result> pTermer;
+
 struct pCb
     : def_type<
         between<
@@ -76,7 +81,7 @@ struct pAp
         mplus<
             one<std::integral_constant<char, '`'>>,
             one<std::integral_constant<char, '*'>>
-        >::eta<pTerm>::eta<pTerm>
+        >::bind<pTermer>::bind<pTermer>
       > {};
 
 using pExpr =

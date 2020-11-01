@@ -9,21 +9,13 @@ namespace details {
 template <template <template <class> class> class>
 using void_nested2_t = void;
 
-template <class, class = void>
-struct has_bind
-    : std::false_type {};
+#define DEF_HAS_BIND_FN(U) void_nested2_t<U::template bind>
+    DEF_ACCESSIBLE(DEF_HAS_BIND_FN, has_bind);
+#undef DEF_HAS_BIND_FN
 
-template <class T>
-struct has_bind<T, void_nested2_t<T::template bind>>
-    : std::true_type {};
-
-template <class, class = void>
-struct has_eta
-    : std::false_type {};
-
-template <class T>
-struct has_eta<T, void_fn_t<T::template eta>>
-    : std::true_type {};
+#define DEF_HAS_ETA_FN(U) mlk::type_traits::void_fn_t<U::template eta>
+    DEF_ACCESSIBLE(DEF_HAS_ETA_FN, has_eta);
+#undef DEF_HAS_ETA_FN
 
 template <class M>
 struct monad_law_base {

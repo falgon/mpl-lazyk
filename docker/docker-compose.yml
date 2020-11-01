@@ -25,5 +25,5 @@ services:
         container_name: mpl-lazyk-test
         volumes:
             - ../../mpl-lazyk:/proj/mpl-lazyk
-        command: /bin/bash -c "make clean && make INPUT='\"${INPUT:-Hello, world!}\"' LAZYK_CODE='\"${LAZYK_CODE:-(SKK)I}\"' && make clean"
+        command: /bin/bash -c "make clean && make INPUT='\"${INPUT:-Hello, world!}\"' LAZYK_CODE='\"${LAZYK_CODE:-(SKK)I}\"' EXT_CFLAGS=${EXT_CFLAGS:-""} && make clean"
         working_dir: /proj/mpl-lazyk/app

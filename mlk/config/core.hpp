@@ -19,13 +19,7 @@
 #   error "boost::typeindex must be available"
 #else
 #   include <boost/type_index.hpp>
-#if !__has_include(<boost/preprocessor/repetition/repeat.hpp>) ||\
-        !__has_include(<boost/preprocessor/punctuation/comma_if.hpp>)
-#   error "boost preprocessor must be available"
-#else
-#   include <boost/preprocessor/repetition/repeat.hpp>
-#   include <boost/preprocessor/punctuation/comma_if.hpp>
-#endif
+#   include "extended_macro.hpp"
 #endif
 
 namespace mlk {
@@ -54,13 +48,17 @@ struct composite {
     BOOST_PP_REPEAT(STRLEN, STRING_TO_CHARS_EXTRACT, STR)
 
 template <class... Ts>
-struct show_type {
+class show_type {
     friend std::ostream& operator<<(std::ostream& os, const show_type&)
     {
         using boost::typeindex::type_id;
         using std::experimental::make_ostream_joiner;
-        const std::array<std::string, sizeof...(Ts)> types { type_id<Ts>().pretty_name()... };
-        std::copy(std::cbegin(types), std::cend(types), make_ostream_joiner(os, ", "));
+        std::array<std::string, sizeof...(Ts)> types { type_id<Ts>().pretty_name()... };
+        std::copy(
+            std::make_move_iterator(std::begin(types)),
+            std::make_move_iterator(std::end(types)),
+            make_ostream_joiner(os, ", ")
+        );
         return os;
     }
 };
