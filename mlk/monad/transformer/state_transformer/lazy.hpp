@@ -52,14 +52,6 @@ public:
     typedef fn<result_f> result_func;
 };
     
-template <class T, class = std::nullptr_t>
-struct evaluate
-    : def_type<T> {};
-
-template <class T>
-struct evaluate<T, MLK_REQUIRES(type_traits::is_metafunc<T>)>
-    : evaluate<typename T::type> {};
-
 } // namespace details
 
 template <class F, class InnerMonad>
@@ -88,7 +80,7 @@ class state_transformer {
         template <class RST>
         struct rst1
             : def_type<
-                typename details::evaluate<RST>::type::template bind<rst1_fn>
+                typename eval_rec<RST>::template bind<rst1_fn>
               > {};
 
         template <class S>
@@ -215,7 +207,7 @@ struct state_transformer_runner<state_transformer<F, InnerMonad>, S> {
     typedef state_transformer<F, InnerMonad> base_type;
 public:
     typedef
-        typename evaluate<typename base_type::template apply<S>>::type
+        eval_rec<typename base_type::template apply<S>>
         type;
 };
 

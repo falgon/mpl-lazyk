@@ -149,7 +149,7 @@ class mplus_result {
     > : def_type<run_parse<parsec<R>, S>> {};
 
     template <class L, class R, class S, class = std::nullptr_t>
-    struct cond1 : cond2<L, typename mlk::monad::transformer::state_transformer::lazy::details::evaluate<R>::type, S> {};
+    struct cond1 : cond2<L, eval_rec<R>, S> {};
 
     template <class L, class R, class S>
     struct cond1<
@@ -159,7 +159,7 @@ class mplus_result {
 
     template <class S>
     struct rst1
-        : cond1<typename mlk::monad::transformer::state_transformer::lazy::details::evaluate<LL>::type, RR, S> {};
+        : cond1<eval_rec<LL>, RR, S> {};
 public:
     typedef fn<rst1> result_func;
 };

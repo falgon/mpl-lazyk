@@ -40,6 +40,13 @@ constexpr char get_ch(char const (&s)[len], std::size_t i)
 
 } // namespace details
 
+template <template <class> class F, template <class> class G>
+struct composite {
+    template <class T>
+    struct result_func
+        : F<typename G<T>::type> {};
+};
+
 #define STRING_TO_CHARS_EXTRACT(z, n, data) \
     BOOST_PP_COMMA_IF(n) mlk::details::get_ch(data, n)
 

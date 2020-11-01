@@ -1,0 +1,29 @@
+version: '3'
+services:
+    test:
+        image: roki/mpl-lazyk-test:1.0.0
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: mpl-lazyk-test
+        volumes:
+            - ../../mpl-lazyk:/proj/mpl-lazyk
+        command: make all clean INCLUDES="-I../ -I/usr/local/include/"
+        working_dir: /proj/mpl-lazyk/tests
+    format:
+        image: kason223/clang-format:latest
+        container_name: clang-format
+        volumes:
+            - ../../mpl-lazyk:/mpl-lazyk
+            - ./.clang-format:/.clang-format
+        command: find /mpl-lazyk -type f \( -name '*.hpp' -or -name '*.cpp' \) -exec clang-format -style=file {} \;
+    lazyk:
+        image: roki/mpl-lazyk-test:1.0.0
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: mpl-lazyk-test
+        volumes:
+            - ../../mpl-lazyk:/proj/mpl-lazyk
+        command: /bin/bash -c "make clean && make INPUT='\"${INPUT:-Hello, world!}\"' LAZYK_CODE='\"${LAZYK_CODE:-(SKK)I}\"' && make clean"
+        working_dir: /proj/mpl-lazyk/app

@@ -1,6 +1,5 @@
 #ifndef INCLUDED_MLK_DATA_LIST_STRICT_HPP
 #define INCLUDED_MLK_DATA_LIST_STRICT_HPP
-
 #include "lazy.hpp"
 #include "../core.hpp"
 
@@ -36,7 +35,7 @@ public:
     using foldr =
         typename base_type::template foldr<fn<F>, Acc>::type;
 
-    template <template <class, class> class F, class Acc>
+    template <template <class, class> class F>
     using foldr1 =
         typename base_type::template foldr1<fn<F>>::type;
 
