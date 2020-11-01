@@ -6,7 +6,7 @@
 namespace mlk::type_traits::lazy {
 
 template <class X>
-struct is_monad {
+class is_monad {
 #define DEF_HAS_ETA_FN(U) mlk::type_traits::void_fn_t<U::template eta>
     DEF_ACCESSIBLE(DEF_HAS_ETA_FN, has_eta);
 #undef DEF_HAS_ETA_FN
@@ -15,7 +15,7 @@ struct is_monad {
 #undef DEF_HAS_BIND_FN
 
     template <class M>
-    struct monad_laws {
+    class monad_laws {
         template <class XM>
         struct monad_law_components {
             template <class T>
@@ -27,7 +27,7 @@ struct is_monad {
                 : def_type<typename F<T>::type::template bind<f_type>> {};
             typedef fn<G> g_type;
         };
-        struct law1 {
+        class law1 {
             typedef
                 typename M
                     ::template eta<unit>
@@ -41,7 +41,7 @@ struct is_monad {
             inline static constexpr bool value =
                 std::is_same_v<eval<lhs>, eval<rhs>>;
         };
-        struct law2 {
+        class law2 {
             typedef
                 typename M::template bind<typename monad_law_components<M>::f_type>
                 lhs;
@@ -50,7 +50,7 @@ struct is_monad {
             inline static constexpr bool value =
                 std::is_same_v<lhs, rhs>;
         };
-        struct law3 {
+        class law3 {
             typedef
                 typename M
                     ::template bind<typename monad_law_components<M>::f_type>

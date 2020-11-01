@@ -54,13 +54,17 @@ struct composite {
     BOOST_PP_REPEAT(STRLEN, STRING_TO_CHARS_EXTRACT, STR)
 
 template <class... Ts>
-struct show_type {
+class show_type {
     friend std::ostream& operator<<(std::ostream& os, const show_type&)
     {
         using boost::typeindex::type_id;
         using std::experimental::make_ostream_joiner;
-        const std::array<std::string, sizeof...(Ts)> types { type_id<Ts>().pretty_name()... };
-        std::copy(std::cbegin(types), std::cend(types), make_ostream_joiner(os, ", "));
+        std::array<std::string, sizeof...(Ts)> types { type_id<Ts>().pretty_name()... };
+        std::copy(
+            std::make_move_iterator(std::begin(types)),
+            std::make_move_iterator(std::end(types)),
+            make_ostream_joiner(os, ", ")
+        );
         return os;
     }
 };
