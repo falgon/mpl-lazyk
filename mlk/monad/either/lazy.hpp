@@ -9,10 +9,8 @@ template <class = unit, class = unit>
 class either;
 
 template <class L>
-class either<L, unit> : def_type<L> {
+class either<L, unit> {
 public:
-    //template <template <class> class>
-    //using bind = either<L, unit>;
     template <class>
     using bind = either<L, unit>;
 
@@ -24,9 +22,7 @@ public:
 };
 
 template <class R>
-class either<unit, R> : def_type<R> {
-    //template <template <class> class FM>
-    //struct binder : FM<R> {};
+class either<unit, R> {
     template <class K>
     class bind_result {
         static_assert(type_traits::is_func<K>::value);
@@ -34,8 +30,6 @@ class either<unit, R> : def_type<R> {
         typedef typename K::template exec<R> type;
     };
 public:
-    //template <template <class> class FM>
-    //using bind = typename binder<FM>::type;
     template <class FM>
     using bind = typename bind_result<FM>::type::type;
 

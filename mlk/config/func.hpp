@@ -50,13 +50,15 @@ struct eval_rec_base<T, MLK_REQUIRES(type_traits::is_metafunc<T>)>
 } // namespace details
 
 template <class T>
-using eval = typename details::eval_base<T>::type;
+using eval =
+    typename details::eval_base<T>::type;
 
 template <class T>
-using eval_rec = typename details::eval_rec_base<T>::type;
+using eval_rec =
+    typename details::eval_rec_base<T>::type;
 
 template <class F, class... Args>
-using exec = 
+using exec =
     typename details::exec_base<F, Args...>::type;
 
 } // namespace mlk

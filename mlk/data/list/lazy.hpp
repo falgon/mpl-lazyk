@@ -1,6 +1,7 @@
 #ifndef INCLUDED_MLK_DATA_LIST_LAZY_HPP
 #define INCLUDED_MLK_DATA_LIST_LAZY_HPP
 #include "../../config.hpp"
+#include "../core.hpp"
 
 namespace mlk::data::list::lazy {
 
@@ -64,7 +65,7 @@ class list : public show_type<list<Xs...>> {
     };
 
     template <class Folder, class F>
-    struct fold_from_pack {
+    struct fold_from_list {
         template <class, class>
         struct result;
 
@@ -72,6 +73,13 @@ class list : public show_type<list<Xs...>> {
         struct result<Acc, list<Ts...>> 
             : Folder::template result<F, Acc, Ts...> {};
     };
+
+    template <class>
+    struct concat_base;
+
+    template <class... Ys>
+    struct concat_base<list<Ys...>>
+        : def_type<list<Xs..., Ys...>> {};
 public:
     template <std::size_t I>
     using at = 
@@ -93,7 +101,7 @@ public:
 
     template <class F>
     using foldr1 = 
-        typename fold_from_pack<foldr_base, F>::template result<eval<head>, eval<tail>>;
+        typename fold_from_list<foldr_base, F>::template result<eval<head>, eval<tail>>;
 
     template <class F, class Acc>
     using foldl = 
@@ -101,20 +109,21 @@ public:
 
     template <class F>
     using foldl1 = 
-        typename fold_from_pack<foldl_base, F>::template result<eval<head>, eval<tail>>;
+        typename fold_from_list<foldl_base, F>::template result<eval<head>, eval<tail>>;
 
     template <class X>
     using cons = 
         def_type<list<X, Xs...>>;
 
-    template <class... Ts>
+    template <class RList>
     using concat = 
-        def_type<list<Xs..., Ts...>>;
+        concat_base<mlk::data::transfer<list, RList>>;
 
     inline static constexpr std::size_t length = sizeof...(Xs);
 
     template <template <class...> class C>
-    using transfer = C<Xs...>;
+    using transfer =
+        mlk::data::transfer<C, list>;
 };
 
 template <class F, class List>
@@ -133,5 +142,25 @@ template <class F, class List>
 using foldl1 = typename List::template foldl1<F>;
 
 } // namespace mlk::data::list::lazy
+
+namespace mlk::data::details {
+
+template <template <class...> class C, class... Xs>
+struct transfer_base<C, mlk::data::list::lazy::list<Xs...>>
+    : def_type<C<Xs...>> {};
+
+} // namespace mlk::data::details
+
+namespace mlk::details {
+
+template <class... Ts>
+struct eval_base<
+    mlk::data::list::lazy::list<Ts...>,
+    std::enable_if_t<std::conjunction_v<type_traits::is_metafunc<Ts>...>, std::nullptr_t>
+> : def_type<
+    mlk::data::list::lazy::list<typename Ts::type...>
+> {};
+
+} // namespace mlk::details
 
 #endif

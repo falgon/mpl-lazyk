@@ -63,7 +63,6 @@ struct unit : show_type<unit> {
     using transfer = unit;
 };
 
-
 template <class T>
 struct def_type
     : std::enable_if<true, T>, show_type<def_type<T>> {};

@@ -2,6 +2,7 @@
 #define INCLUDED_MLK_DATA_LIST_STRICT_HPP
 
 #include "lazy.hpp"
+#include "../core.hpp"
 
 namespace mlk::data::list::strict {
 
@@ -47,9 +48,20 @@ public:
     using foldl1 =
         typename base_type::template foldl1<fn<F>>::type;
 
+    template <template <class...> class C>
+    using transfer = mlk::data::transfer<C, list>;
+
     inline static constexpr std::size_t length = base_type::length;
 };
 
 } // namespace mlk::data::list::strict
+
+namespace mlk::data::details {
+
+template <template <class...> class C, class... Xs>
+struct transfer_base<C, mlk::data::list::strict::list<Xs...>>
+    : def_type<C<Xs...>> {};
+
+} // namespace mlk::data::details
 
 #endif
