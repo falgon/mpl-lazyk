@@ -41,4 +41,8 @@ $ docker-compose -f docker/docker-compose.yml run lazyk
 Hello, world!
 $ INPUT="Que Sera, Sera" LAZYK_CODE="(SKK)I" docker-compose -f docker/docker-compose.yml run lazyk
 Que Sera, Sera
+$ INPUT="Que Sera, Sera" LAZYK_CODE="SII``sii" docker-compose -f docker/docker-compose.yml run lazyk
+Que Sera, Sera
+$ INPUT="Que Sera, Sera" LAZYK_CODE="****i*i*i*ii*ii*ii11111110001111111110000011111111100000" docker-compose -f docker/docker-compose.yml run lazyk
+Que Sera, Sera
 ```
