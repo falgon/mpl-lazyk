@@ -18,25 +18,25 @@ using pS =
     mplus<
         one<std::integral_constant<char, 'S'>>,
         one<std::integral_constant<char, 's'>>
-    >::eta<S>;
+    >::dbind<eta<S>>;
 
 using pK = 
     mplus<
         one<std::integral_constant<char, 'K'>>,
         one<std::integral_constant<char, 'k'>>
-    >::eta<K>;
+    >::dbind<eta<K>>;
 
 using pI =
-    one<std::integral_constant<char, 'I'>>::eta<I>;
+    one<std::integral_constant<char, 'I'>>::dbind<eta<I>>;
 
 using pU = 
     mplus<
         one<std::integral_constant<char, 'i'>>,
         one<std::integral_constant<char, '0'>>
-    >::eta<U>;
+    >::dbind<eta<U>>;
 
 using pB = 
-    one<std::integral_constant<char, '1'>>::eta<B>;
+    one<std::integral_constant<char, '1'>>::dbind<eta<B>>;
 
 template <class X, class Acc>
 struct msum_func
@@ -62,11 +62,6 @@ public:
 };
 typedef mlk::fn<Afolder_result> Afolder;
 
-template <class>
-struct pTerm_result
-    : def_type<pTerm> {};
-typedef mlk::fn<pTerm_result> pTermer;
-
 struct pCb
     : def_type<
         between<
@@ -81,7 +76,7 @@ struct pAp
         mplus<
             one<std::integral_constant<char, '`'>>,
             one<std::integral_constant<char, '*'>>
-        >::bind<pTermer>::bind<pTermer>
+        >::dbind<pTerm>::dbind<pTerm>
       > {};
 
 using pExpr =

@@ -34,18 +34,18 @@ template <class T>
 using s2e = typename s2e_base<T>::type;
 
 template <std::size_t, class, class>
-struct subst_base;
+struct substitution_base;
 
 template <std::size_t v, class W, class E>
-struct subst_base<v, mlk::data::tree::tree<lambda_elem<W>, list<>>, E>
-    : def_type<L<typename subst_base<v + 1, W, E>::type>> {};
+struct substitution_base<v, mlk::data::tree::tree<lambda_elem<W>, list<>>, E>
+    : def_type<L<typename substitution_base<v + 1, W, E>::type>> {};
 
 template <std::size_t v, class M, class N, class E>
-struct subst_base<v, mlk::data::tree::binary_tree<app_elem, M, N>, E>
-    : def_type<A<typename subst_base<v, M, E>::type, typename subst_base<v, N, E>::type>> {};
+struct substitution_base<v, mlk::data::tree::binary_tree<app_elem, M, N>, E>
+    : def_type<A<typename substitution_base<v, M, E>::type, typename substitution_base<v, N, E>::type>> {};
 
 template <std::size_t v, class N, class E>
-struct subst_base<v, mlk::data::tree::tree<dbi_elem<N>, list<>>, E> {
+struct substitution_base<v, mlk::data::tree::tree<dbi_elem<N>, list<>>, E> {
 private:
     template <std::size_t, std::size_t, class>
     struct inner_func2;
@@ -89,7 +89,7 @@ public:
 };
 
 template <std::size_t v, class N, class E>
-using subst = typename subst_base<v, N, E>::type;
+using substitution = typename substitution_base<v, N, E>::type;
 
 template <class E>
 class eval_lazyk_base
@@ -107,7 +107,7 @@ class eval_lazyk_base<mlk::data::tree::binary_tree<app_elem, F, E>> {
             E
         >
     >
-    : public eval_lazyk_base<subst<0, V, typename eval_lazyk_base<E>::type>> {};
+    : public eval_lazyk_base<substitution<0, V, typename eval_lazyk_base<E>::type>> {};
     template <class G>
     struct step<
         mlk::data::tree::binary_tree<

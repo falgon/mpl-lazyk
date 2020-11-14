@@ -446,7 +446,7 @@ BOOST_AUTO_TEST_CASE(mlk_text_parsec_test10_5)
             parsec::mplus<
                 parsec::one<std::integral_constant<char, 'a'>>,
                 parsec::one<std::integral_constant<char, 'b'>>
-            >::eta<std::integral_constant<char, 'c'>>,
+            >::dbind<parsec::eta<std::integral_constant<char, 'c'>>>,
             vl::val_pack<MLK_PP_CHARS(1, "b")>::to_list
         >
         test10_5;
@@ -462,6 +462,44 @@ BOOST_AUTO_TEST_CASE(mlk_text_parsec_test10_5)
         >;
     static_assert(test10_5_val2);
     BOOST_TEST(test10_5_val2);
+}
+
+template <class P, class B>
+class test11_parsers_runner {
+    typedef vl::val_pack<MLK_PP_CHARS(3, "abc")>::to_list test11_input;
+    typedef typename et::from_right<parsec::run_parse<P, test11_input>> R;
+public:
+    typedef std::bool_constant<
+        R::first_type::value == 'c' && R::second_type::length == 0 && B::value
+    > type;
+};
+
+BOOST_AUTO_TEST_CASE(mlk_text_parsec_test11)
+{
+    typedef
+        parsec::one<std::integral_constant<char, 'a'>>
+            ::dbind<parsec::one<std::integral_constant<char, 'b'>>>
+            ::dbind<parsec::one<std::integral_constant<char, 'c'>>>
+        parser1;
+
+    typedef
+        parsec::one<std::integral_constant<char, 'a'>>
+            ::one<std::integral_constant<char, 'b'>>
+            ::dbind<parsec::one<std::integral_constant<char, 'c'>>>
+        parser2;
+
+    typedef
+        parsec::one<std::integral_constant<char, 'a'>>
+            ::dbind<parsec::one<std::integral_constant<char, 'b'>>>
+            ::one<std::integral_constant<char, 'c'>>
+        parser3;
+
+    constexpr bool test11_val =
+        mlk::data::list::strict::list<parser1, parser2, parser3>
+            ::foldr<test11_parsers_runner, std::true_type>::value;
+
+    static_assert(test11_val);
+    static_assert(test11_val);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

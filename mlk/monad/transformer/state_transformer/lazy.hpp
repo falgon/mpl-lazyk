@@ -54,6 +54,16 @@ public:
     
 } // namespace details
 
+template <class, class>
+class state_transformer;
+
+template <class F, class InnerMonad>
+using state_method =
+    state_transformer<
+        typename details::state_method_base<F, InnerMonad>::result_func, 
+        InnerMonad
+    >;
+
 template <class F, class InnerMonad>
 class state_transformer {
     static_assert(type_traits::is_func<F>::value);
@@ -88,6 +98,15 @@ class state_transformer {
             : rst1<exec<F, S>> {};
     public:
         typedef fn<result_f> result_func;
+    };
+
+    template <class StateM>
+    class discard_binder {
+        template <class>
+        struct rst1
+            : def_type<StateM> {};
+    public:
+        typedef fn<rst1> result_func;
     };
 
     template <class X>
@@ -158,9 +177,13 @@ public:
             InnerMonad
         >;
 
+    template <class StateM>
+    using dbind =
+        bind<typename discard_binder<StateM>::result_func>;
+
     template <class A>
     using eta =
-        bind<typename eta_result<A>::result_func>;
+        state_method<typename details::eta_result<A>::result_func, InnerMonad>;
 
     using get =
         bind<typename const_get::result_func>;
@@ -173,13 +196,6 @@ public:
     using modify =
         bind<typename const_modify<G>::result_func>;
 };
-
-template <class F, class InnerMonad>
-using state_method =
-    state_transformer<
-        typename details::state_method_base<F, InnerMonad>::result_func, 
-        InnerMonad
-    >;
 
 template <class A, class InnerMonad>
 using eta =

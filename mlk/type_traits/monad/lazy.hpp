@@ -13,64 +13,9 @@ class is_monad {
 #define DEF_HAS_BIND_FN(U) mlk::type_traits::void_fn_t<U::template bind>
     DEF_ACCESSIBLE(DEF_HAS_BIND_FN, has_bind);
 #undef DEF_HAS_BIND_FN
-
-    template <class M>
-    class monad_laws {
-        template <class XM>
-        struct monad_law_components {
-            template <class T>
-            struct F
-                : def_type<typename XM::template eta<T>> {};
-            typedef fn<F> f_type;
-            template <class T>
-            struct G
-                : def_type<typename F<T>::type::template bind<f_type>> {};
-            typedef fn<G> g_type;
-        };
-        class law1 {
-            typedef
-                typename M
-                    ::template eta<unit>
-                    ::template bind<typename monad_law_components<M>::f_type>
-                lhs;
-            typedef
-                typename monad_law_components<M>::f_type
-                    ::template exec<unit>
-                rhs;
-        public:
-            inline static constexpr bool value =
-                std::is_same_v<eval<lhs>, eval<rhs>>;
-        };
-        class law2 {
-            typedef
-                typename M::template bind<typename monad_law_components<M>::f_type>
-                lhs;
-            typedef M rhs;
-        public:
-            inline static constexpr bool value =
-                std::is_same_v<lhs, rhs>;
-        };
-        class law3 {
-            typedef
-                typename M
-                    ::template bind<typename monad_law_components<M>::f_type>
-                    ::template bind<typename monad_law_components<M>::f_type>
-                lhs;
-            typedef
-                typename M
-                    ::template bind<typename monad_law_components<M>::g_type>
-                rhs;
-        public:
-            inline static constexpr bool value =
-                std::is_same_v<lhs, rhs>;
-        };
-    public:
-        inline static constexpr bool value =
-            std::conjunction_v<law1, law2, law3>;
-    };
 public:
     inline static constexpr bool value =
-        std::conjunction_v<has_eta<X>, has_bind<X>, monad_laws<X>>;
+        std::conjunction_v<has_eta<X>, has_bind<X>>;
 };
 
 } // namespace mlk::type_traits

@@ -1,5 +1,6 @@
 #include "../../test_libs.hpp"
 #include <mlk/monad/either/strict.hpp>
+#include <mlk/type_traits/monad/strict.hpp>
 
 using namespace mlk;
 namespace et = mlk::monad::either::strict;
@@ -39,10 +40,15 @@ static_assert(
     >
 );
 
+static_assert(
+    mlk::type_traits::strict::is_monad<et::either<>>::value
+);
+
 BOOST_AUTO_TEST_SUITE(mlk_monad_either_tests)
 
 BOOST_AUTO_TEST_CASE(mlk_monad_either_test1)
 {
+    BOOST_TEST(mlk::type_traits::strict::is_monad<et::either<>>::value);
     BOOST_CHECK_EQUAL(test1::value, 42);
 }
 

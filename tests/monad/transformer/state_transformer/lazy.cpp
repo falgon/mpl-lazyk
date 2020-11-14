@@ -45,6 +45,12 @@ typedef
         ::bind<any>
     test3_expr;
 
+typedef
+    st::get<et::either<>>
+        ::dbind<st::put<mlk::data::val_pack::val_pack<MLK_PP_CHARS(8, "replaced")>::to_list, et::either<>>>
+        ::get
+    test4_expr;
+
 template <class>
 struct F1
     : mlk::def_type<
@@ -72,6 +78,14 @@ public:
         typename st::put<typename A::tail, et::either<>>::template bind<rst1>
         type;
 };
+
+BOOST_AUTO_TEST_CASE(mlk_monad_transformer_lazy_state_transformer_is_monad)
+{
+    constexpr bool is_monad = 
+        mlk::type_traits::lazy::is_monad<st::eta<int, et::either<>>>::value;
+    static_assert(is_monad);
+    BOOST_TEST(is_monad);
+}
 
 BOOST_AUTO_TEST_CASE(mlk_monad_transformer_lazy_state_transformer_test1)
 {
@@ -128,5 +142,31 @@ BOOST_AUTO_TEST_CASE(mlk_monad_transformer_lazy_state_transformer_test3)
     static_assert(test3_val);
     BOOST_TEST(test3_val);
 }
+
+template <class XM>
+struct com {
+    template <class T>
+    struct F : mlk::def_type<typename XM::template eta<T>> {};
+    typedef mlk::fn<F> f_type;
+};
+
+BOOST_AUTO_TEST_CASE(mlk_monad_transformer_lazy_state_transformer_test4)
+{
+    typedef
+        st::run_state_transformer<
+            test4_expr,
+            mlk::data::val_pack::val_pack<MLK_PP_CHARS(3, "abc")>::to_list
+        >
+        test4;
+
+    constexpr bool test4_val =
+        std::is_same_v<
+            typename et::from_right<test4>::first_type,
+            mlk::data::val_pack::val_pack<MLK_PP_CHARS(8, "replaced")>::to_list
+        >;
+    static_assert(test4_val);
+    BOOST_TEST(test4_val);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

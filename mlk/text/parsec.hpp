@@ -183,7 +183,7 @@ class between_consume<
     typedef fn<rst2> rst2_fn;
 
     template <class A>
-    struct rst3 : def_type<typename parse_state<CF>::template eta<A>> {};
+    struct rst3 : def_type<typename parse_state<CF>::template dbind<details::eta<A>>> {};
     typedef fn<rst3> rst3_fn;
 
     template <class>
@@ -297,10 +297,13 @@ class parsec<details::parse_state<F>> {
 public:
     typedef details::parse_state<F> un_parsec;
 private:
-    template <class>
-    struct anyone_consume_result
-        : def_type<parsec<details::get::template bind<details::anyone>>> {};
-    typedef fn<anyone_consume_result> anyone_consume;
+    class anyone_consume_result {
+        template <class>
+        struct rst1
+            : def_type<parsec<details::get::template bind<details::anyone>>> {};
+    public:
+        typedef fn<rst1> result_func;
+    };
 
     template <class G>
     class satisfy_consume_result {
@@ -321,6 +324,14 @@ private:
     public:
         typedef fn<rst1> result_func;
     };
+
+    template <class M>
+    class discard_binder {
+        template <class>
+        struct rst1 : def_type<M> {};
+    public:
+        typedef fn<rst1> result_func;
+    };
 public:
     template <class G>
     using bind =
@@ -330,12 +341,16 @@ public:
             >
         >;
 
+    template <class M>
+    using dbind =
+        bind<typename discard_binder<M>::result_func>;
+
     template <class X>
     using eta =
         parsec<typename un_parsec::template eta<X>>;
 
     using anyone =
-        bind<anyone_consume>;
+        bind<typename anyone_consume_result::result_func>;
 
     template <class G>
     using satisfy =

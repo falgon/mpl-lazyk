@@ -17,38 +17,11 @@ using void_nested2_t = void;
     DEF_ACCESSIBLE(DEF_HAS_ETA_FN, has_eta);
 #undef DEF_HAS_ETA_FN
 
-template <class M>
-struct monad_law_base {
-    template <class X>
-    struct F
-        : def_type<typename M::template eta<X>> {};
-
-    template <class X>
-    struct G 
-        : def_type<typename F<X>::type::template bind<F>> {};
-};
-
-template <class M>
-struct monad_law 
-    : std::conjunction<
-        std::is_same<
-            typename M::template eta<unit>::template bind<monad_law_base<M>::template F>, 
-            typename monad_law_base<M>::template F<unit>::type
-        >,
-        std::is_same<typename M::template bind<monad_law_base<M>::template F>, M>,
-        std::is_same<
-            typename M
-                ::template bind<monad_law_base<M>::template F>
-                ::template bind<monad_law_base<M>::template F>,
-            typename M::template bind<monad_law_base<M>::template G>
-        >
-    > {};
-
 } // namespace details
 
 template <class T>
 struct is_monad
-    : std::conjunction<details::has_bind<T>, details::has_eta<T>, details::monad_law<T>> {};
+    : std::conjunction<details::has_bind<T>, details::has_eta<T>> {};
 
 } // namespace mlk
 #endif

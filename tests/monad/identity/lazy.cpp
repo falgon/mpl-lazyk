@@ -23,9 +23,8 @@ BOOST_AUTO_TEST_SUITE(mlk_monad_identity_tests)
 
 BOOST_AUTO_TEST_CASE(mlk_monad_identity_tests1)
 {   
-    //BOOST_TEST(type_traits::strict::is_monad<identity<int>>::value);
-    //BOOST_TEST(type_traits::strict::is_monad<eta<int>>::value);
-
+    BOOST_TEST(type_traits::lazy::is_monad<identity<int>>::value);
+    BOOST_TEST(type_traits::lazy::is_monad<eta<int>>::value);
     constexpr bool test1 = std::is_same<
         run_identity<eta<int>::bind<fn_type>>,
         int
