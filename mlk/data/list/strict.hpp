@@ -31,6 +31,10 @@ public:
     using map =
         typename base_type::template map<fn<F>>::type::template transfer<list>;
 
+    template <template <class> class F>
+    using filter =
+        typename base_type::template filter<fn<F>>::type::template transfer<list>;
+
     template <template <class, class> class F, class Acc>
     using foldr =
         typename base_type::template foldr<fn<F>, Acc>::type;

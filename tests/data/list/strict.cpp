@@ -97,4 +97,33 @@ BOOST_AUTO_TEST_CASE(mlk_data_list_test4)
     BOOST_TEST(test4);
 }
 
+template <class X>
+struct is_even
+    : std::bool_constant<X::value % 2 == 0> {};
+
+BOOST_AUTO_TEST_CASE(mlk_data_list_test5)
+{
+    typedef
+        list<
+            std::integral_constant<int, 1>,
+            std::integral_constant<int, 2>,
+            std::integral_constant<int, 3>,
+            std::integral_constant<int, 4>,
+            std::integral_constant<int, 5>,
+            std::integral_constant<int, 6>
+        >::filter<is_even>
+        ltype;
+    typedef
+        list<
+            std::integral_constant<int, 2>,
+            std::integral_constant<int, 4>,
+            std::integral_constant<int, 6>
+        >
+        rtype;
+    constexpr bool test5 =
+        std::is_same_v<ltype, rtype>;
+    static_assert(test5);
+    BOOST_TEST(test5);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

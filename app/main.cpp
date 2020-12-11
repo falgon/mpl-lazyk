@@ -30,12 +30,18 @@ template <template <class> class F>
 using lift_either =
     mlk::composite<eta, F>;
 
+template <class X>
+struct remove_spaces
+    : std::bool_constant<X::value != ' '> {};
+
 int main()
 {
     typedef
         mlk::text::parsec::run_parse<
             mlk::lazyk::parser,
-            mlk::data::val_pack::val_pack<MLK_PP_CHARS(LAZYK_CODE_LEN, LAZYK_CODE)>::to_list
+            mlk::data::val_pack::val_pack<MLK_PP_CHARS(LAZYK_CODE_LEN, LAZYK_CODE)>
+                ::to_list
+                ::filter<remove_spaces>
         >
         parse_result;
 

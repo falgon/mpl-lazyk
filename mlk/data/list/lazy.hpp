@@ -80,6 +80,22 @@ class list : public show_type<list<Xs...>> {
     template <class... Ys>
     struct concat_base<list<Ys...>>
         : def_type<list<Xs..., Ys...>> {};
+
+    template <class F>
+    class filter_folder {
+        static_assert(
+            type_traits::is_func<F>::value,
+            "The type F must be satisfied type_traits::is_func constraint"
+        );
+    public:
+        template <class X, class Acc>
+        struct result_fn
+            : std::conditional<
+                F::template exec<X>::type::value,
+                typename Acc::template cons<X>::type,
+                Acc
+            > {};
+    };
 public:
     template <std::size_t I>
     using at = 
@@ -88,7 +104,7 @@ public:
     template <class F, MLK_REQUIRES(type_traits::is_func<F>) = nullptr>
     using map = 
         map_base<F>;
-
+    
     using head = 
         typename head_tail_base::template result<Xs...>::first_type;
 
@@ -124,6 +140,10 @@ public:
     template <template <class...> class C>
     using transfer =
         mlk::data::transfer<C, list>;
+    
+    template <class F>
+    using filter =
+        foldr<fn<filter_folder<F>::template result_fn>, list<>>;
 };
 
 template <class F, class List>
