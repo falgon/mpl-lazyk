@@ -44,3 +44,7 @@ Or inside the docker container...
 ```bash
 $ docker-compose -f docker/docker-compose.yml run test
 ```
+
+## FYI
+
+There is [my blog post](https://roki.dev/roki.log/2020/12/16/CompileTimeLazyKWithCXXTemplateMetaProgramming/index.html) about  this implementation (Japanese)
