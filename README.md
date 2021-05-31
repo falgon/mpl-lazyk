@@ -47,4 +47,5 @@ $ docker-compose -f docker/docker-compose.yml run test
 
 ## FYI
 
-There is [my blog post](https://roki.dev/roki.log/2020/12/16/CompileTimeLazyKWithCXXTemplateMetaProgramming/index.html) about  this implementation (Japanese)
+- There is [my blog post](https://roki.dev/roki.log/2020/12/16/CompileTimeLazyKWithCXXTemplateMetaProgramming/index.html) about  this implementation (Japanese)
+- If you enojoy this, write your impressions on [reddit](https://www.reddit.com/r/cpp/comments/kt72dz/lazy_k_interpreter_in_c_template_metaprogramming/)!
